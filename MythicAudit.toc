@@ -1,0 +1,29 @@
+## Interface: 70200
+## Title: Mythic Audit
+## Notes: Highest Completed Mythic+ Manager for Guilds
+## Author: Hoppersucks
+## DefaultState: Enabled
+## LoadOnDemand: 0
+## SavedVariables: MAPlayerDB, MADB
+
+libs\LibStub\Libstub.lua
+libs\AceAddon-3.0\AceAddon-3.0.xml
+libs\AceLocale-3.0\AceLocale-3.0.xml
+
+Localization\enUS.lua
+Localization\frFR.lua
+
+## More languages can be added later (per request)
+## Localization\esES.lua
+## Localization\deDE.lua
+## Localization\ruRU.lua
+## Localization\zhTW.lua
+## Localization\koKR.lua
+## Localization\esMX.lua
+## Localization\itIT.lua
+## Localization\ptBR.lua
+## Localization\zhCN.lua
+
+embeds.xml
+MythicAudit.lua
+MythicAudit.xml

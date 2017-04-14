@@ -1,0 +1,113 @@
+<Ui xmlns="http://www.blizzard.com/wow/ui/" 
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+                   xsi:schemaLocation="http://www.blizzard.com/wow/ui/ 
+                   ..\..\FrameXML\UI.xsd">
+  <Button name = "MyModEntryTemplate" virtual="true">
+    <Size>
+      <AbsDimension x="150" y="16" />
+    </Size>
+    <NormalFont style="GameFontHighlightLeft"/>
+  </Button>
+
+  <Frame name="MyMod" parent="UIParent" enableMouse="true" movable="true">
+    <Size>
+      <AbsDimension x="196" y="154"/>
+    </Size>
+    <Anchors>
+      <Anchor point="CENTER"/>
+    </Anchors>
+    <Scripts>
+      <OnLoad>
+        MyMod_OnLoad()
+      </OnLoad>
+    </Scripts>
+    <Backdrop bgFile="Interface\DialogFrame\UI-DialogBox-Background" edgeFile="Interface\Tooltips\UI-Tooltip-Border" tile="true">
+      <BackgroundInsets>
+        <AbsInset left="4" right="4" top="4" bottom="4" />
+      </BackgroundInsets>
+      <TileSize>
+        <AbsValue val="16" />
+      </TileSize>
+      <EdgeSize>
+        <AbsValue val="16" />
+      </EdgeSize>
+    </Backdrop>
+    <Frames>
+      <Button name="$parent_Close" parentKey="close" inherits="UIPanelCloseButton">
+         <Anchors>
+           <Anchor point="TOPLEFT" relativePoint="TOPLEFT" relativeTo="MyMod">
+             <Offset x="-25" y="20"/>
+           </Anchor>
+         </Anchors>
+       </Button>
+      <ScrollFrame name="MyModScrollBar" inherits="FauxScrollFrameTemplate">
+        <Anchors>
+          <Anchor point="TOPLEFT">
+            <Offset>
+              <AbsDimension x="0" y="-8"/>
+            </Offset>
+          </Anchor>
+          <Anchor point="BOTTOMRIGHT">
+            <Offset>
+              <AbsDimension x="-30" y="8"/>
+            </Offset>
+          </Anchor>
+        </Anchors>
+        <Scripts>
+          <OnVerticalScroll>
+            FauxScrollFrame_OnVerticalScroll(self, offset, 16, MyModScrollBar_Update);
+          </OnVerticalScroll>
+          <OnShow>
+            MyModScrollBar_Update()
+          </OnShow>
+        </Scripts>
+      </ScrollFrame>
+
+      <Button name="MyModEntry1" inherits="MyModEntryTemplate">
+        <Anchors>
+          <Anchor point="TOPLEFT" relativeTo="MyModScrollBar" relativePoint="TOPLEFT">
+            <Offset>
+              <AbsDimension x="8" y="0"/>
+            </Offset>
+           </Anchor>
+        </Anchors>
+      </Button>
+      <Button name="MyModEntry2" inherits="MyModEntryTemplate">
+        <Anchors>
+          <Anchor point="TOPLEFT" relativeTo="MyModEntry1" relativePoint="BOTTOMLEFT"/>
+        </Anchors>
+      </Button>
+      <Button name="MyModEntry3" inherits="MyModEntryTemplate">
+        <Anchors>
+          <Anchor point="TOPLEFT" relativeTo="MyModEntry2" relativePoint="BOTTOMLEFT"/>
+        </Anchors>
+      </Button>
+      <Button name="MyModEntry4" inherits="MyModEntryTemplate">
+        <Anchors>
+          <Anchor point="TOPLEFT" relativeTo="MyModEntry3" relativePoint="BOTTOMLEFT"/>
+        </Anchors>
+      </Button>
+      <Button name="MyModEntry5" inherits="MyModEntryTemplate">
+        <Anchors>
+          <Anchor point="TOPLEFT" relativeTo="MyModEntry4" relativePoint="BOTTOMLEFT"/>
+        </Anchors>
+      </Button>
+      <Button name="MyModEntry6" inherits="MyModEntryTemplate">
+        <Anchors>
+          <Anchor point="TOPLEFT" relativeTo="MyModEntry4" relativePoint="BOTTOMLEFT"/>
+        </Anchors>
+      </Button>
+      <Button name="MyModEntry7" inherits="MyModEntryTemplate">
+        <Anchors>
+          <Anchor point="TOPLEFT" relativeTo="MyModEntry4" relativePoint="BOTTOMLEFT"/>
+        </Anchors>
+      </Button>
+      <Button name="MyModEntry8" inherits="MyModEntryTemplate">
+        <Anchors>
+          <Anchor point="TOPLEFT" relativeTo="MyModEntry4" relativePoint="BOTTOMLEFT"/>
+        </Anchors>
+      </Button>
+
+    </Frames>
+  </Frame>
+</Ui>
