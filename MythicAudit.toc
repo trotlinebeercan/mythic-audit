@@ -4,16 +4,16 @@
 ## Author: Hoppersucks
 ## DefaultState: Enabled
 ## LoadOnDemand: 0
-## SavedVariables: MAPlayerDB, MADB
+## SavedVariables: _MAudit_PlayerDatabase_, _MAudit_Database_
 
 libs\LibStub\Libstub.lua
 libs\AceAddon-3.0\AceAddon-3.0.xml
 libs\AceLocale-3.0\AceLocale-3.0.xml
 
 Localization\enUS.lua
-Localization\frFR.lua
 
 ## More languages can be added later (per request)
+## Localization\frFR.lua
 ## Localization\esES.lua
 ## Localization\deDE.lua
 ## Localization\ruRU.lua

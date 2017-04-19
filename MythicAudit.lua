@@ -45,7 +45,7 @@ local gWeeklyChestItemLevels = {
     [10] = 905
 };
 
-MADB = { week = 604800, resetTime };
+_MAudit_Database_ = { week = 604800, resetTime };
 
 -------------------------------------------------------------------------------
 -- pragma mark Application Impl and Event Handling
@@ -64,12 +64,12 @@ addon:RegisterEvent("CHAT_MSG_ADDON");
 function addon:ADDON_LOADED(addonName)
     if addonName == "Mythic Audit" then
         addon:UnregisterEvent("ADDON_LOADED");
-        MAPlayerDB = MAPlayerDB or {};
+        MA_WeeklyReset();
+        _MAudit_PlayerDatabase_ = _MAudit_PlayerDatabase_ or {};
     end
 end
 
 function addon:PLAYER_LOGIN()
-    MA_WeeklyReset();
     C_ChallengeMode.RequestMapInfo(); -- MA_UpdateMyHighestCompleted();
     DEFAULT_CHAT_FRAME:AddMessage(MA_GetGreetingString());
 end
@@ -102,17 +102,22 @@ function addon:CHAT_MSG_ADDON(prefix, message, channel, sender)
                 -- do nothing, because we do not want to process or own info
             else
                 -- otherwise, store this users info in our local database
-                MA_WriteToDatabase(message);
+                local _, _, _, time = MA_DeconstructFullKeyMessageString(message);
+                if time ~= nil and time > _MAudit_Database_.resetTime - gWeekInSeconds then
+                    MA_WriteToDatabase(message);
+                end
             end
         end
     end
 end
 
 function MA_SendDatabase()
-    for data in pairs(MAPlayerDB) do
-        local char = MAPlayerDB[data];
-        if char.NAME ~= gPlayerName then
-            MA_SendKey(MA_ConstructFullKeyMessageString(char.NAME, char.CLASS, char.HIGHEST));
+    if _MAudit_PlayerDatabase_ then
+        for data in pairs(_MAudit_PlayerDatabase_) do
+            local char = _MAudit_PlayerDatabase_[data];
+            if char.NAME ~= gPlayerName then
+                MA_SendKey(MA_ConstructFullKeyMessageString(char.NAME, char.CLASS, char.HIGHEST));
+            end
         end
     end
 end
@@ -122,11 +127,12 @@ function MA_SendKey(message)
 end
 
 function MA_WriteToDatabase(message)
-    local name, class, highest = MA_DeconstructFullKeyMessageString(message);
-    MAPlayerDB[name] = {
+    local name, class, highest, time = MA_DeconstructFullKeyMessageString(message);
+    _MAudit_PlayerDatabase_[name] = {
         NAME    = name,
         CLASS   = class,
-        HIGHEST = highest
+        HIGHEST = highest,
+        TIME    = time
     };
 end
 
@@ -137,8 +143,9 @@ function MA_ConstructFullKeyMessageString(playerName, playerClass, highestComple
     -- local playerName     = UnitName("player");
     -- local _, playerClass = UnitClass("player");
 
+    local serverTime = tostring(GetServerTime());
     if highestCompleted == nil then highestCompleted = 0; end
-    return playerName .. "-" .. playerClass .. "-" .. highestCompleted;
+    return playerName .. "-" .. playerClass .. "-" .. highestCompleted .. "-" .. serverTime;
 end
 
 function MA_DeconstructFullKeyMessageString(message)
@@ -164,9 +171,9 @@ function MA_UpdateMyHighestCompleted()
 
     if not maxCompleted then maxCompleted = 0; end
 
-    if MAPlayerDB[gPlayerName] then
+    if _MAudit_PlayerDatabase_[gPlayerName] then
         local completedNewHigher = false;
-        local currentHighest = tonumber(MAPlayerDB[gPlayerName].HIGHEST);
+        local currentHighest = tonumber(_MAudit_PlayerDatabase_[gPlayerName].HIGHEST);
         if currentHighest <= maxCompleted then
             completedNewHigher = false;
         else
@@ -205,8 +212,8 @@ function MA_WeeklyReset()
         resetTime = resetNA;
     end
     
-    if (MADB.resetTime ~= nil) then
-        resetTime = MADB.resetTime;
+    if (_MAudit_Database_.resetTime ~= nil) then
+        resetTime = _MAudit_Database_.resetTime;
     end
 
     if (resetTime < currentTime) then
@@ -214,17 +221,18 @@ function MA_WeeklyReset()
             resetTime = resetTime + week;
         until (resetTime > currentTime);
         DEFAULT_CHAT_FRAME:AddMessage(MA_GetResettingDatabaseString());
-        MAPlayerDB = {};
+        _MAudit_PlayerDatabase_ = {};
     end
-    MADB.resetTime = resetTime;
+
+    _MAudit_Database_.resetTime = resetTime;
 end
 
 function MA_DumpDatabase()
-    for data in pairs(MAPlayerDB) do
-        local toon = MAPlayerDB[data];
+    for data in pairs(_MAudit_PlayerDatabase_) do
+        local toon = _MAudit_PlayerDatabase_[data];
         local str = gClassColors[toon.CLASS]..toon.NAME.."|r: "..((tonumber(toon.HIGHEST) >= 10 and '|cff00ff00' .. toon.HIGHEST) or toon.HIGHEST);
         if tonumber(toon.HIGHEST) > 0 then
-            str = str .. string.format('|r (%d)', gWeeklyChestItemLevels[tonumber(toon.HIGHEST)] or 9005);
+            str = str .. string.format('|r (%d)', gWeeklyChestItemLevels[tonumber(toon.HIGHEST)] or 905);
         end
         DEFAULT_CHAT_FRAME:AddMessage(str);
     end
@@ -248,42 +256,49 @@ end
 -------------------------------------------------------------------------------
 -- GUI
 -------------------------------------------------------------------------------
-MyModData = {}
+MAGUI_isLoaded = false;
+MAGUIData = {};
 
-function MyMod_OnLoad()
-    MyMod:Hide()
+function MAGUI_OnLoad()
+    MAGUI:Hide()
 end
 
-function MyMod_OnShow()
+function MAGUI_OnShow()
     local index = 1;
-    for data in pairs(MAPlayerDB) do
-        local toon = MAPlayerDB[data];
+    for data in pairs(_MAudit_PlayerDatabase_) do
+        local toon = _MAudit_PlayerDatabase_[data];
         local str = gClassColors[toon.CLASS]..toon.NAME.."|r - "..((tonumber(toon.HIGHEST) >= 10 and '|cff00ff00' .. toon.HIGHEST) or toon.HIGHEST);
         if tonumber(toon.HIGHEST) > 0 then
             str = str .. string.format('|r (%d)', gWeeklyChestItemLevels[tonumber(toon.HIGHEST)] or 905);
         end
-        MyModData[index] = str;
+        MAGUIData[index] = str;
         index = index + 1;
     end
-    MyMod:EnableMouse(true)
-    MyMod:SetMovable(true)
-    MyMod:RegisterForDrag("LeftButton")
-    MyMod:SetScript("OnDragStart", MyMod.StartMoving)
-    MyMod:SetScript("OnDragStop", MyMod.StopMovingOrSizing)
-    MyMod:Show()
+
+    MAGUI_isLoaded = true;
+
+    MAGUI:EnableMouse(true);
+    MAGUI:SetMovable(true);
+    MAGUI:RegisterForDrag("LeftButton");
+    MAGUI:SetScript("OnDragStart", MAGUI.StartMoving);
+    MAGUI:SetScript("OnDragStop", MAGUI.StopMovingOrSizing);
+    MAGUI:Show();
 end
 
-function MyModScrollBar_Update()
+function MAGUIScrollBar_Update()
+    if not MAGUIData then return; end
+    if not MAGUI_isLoaded then return; end
+
     local line; -- 1 through 5 of our window to scroll
     local lineplusoffset; -- an index into our data calculated from the scroll offset
-    FauxScrollFrame_Update(MyModScrollBar, 50, 8, 16);
+    FauxScrollFrame_Update(MAGUIScrollBar, 50, 8, 16);
     for line = 1, 8 do
-        lineplusoffset = line + FauxScrollFrame_GetOffset(MyModScrollBar);
-        if lineplusoffset <= 50 then
-            getglobal("MyModEntry"..line):SetText(MyModData[lineplusoffset]);
-            getglobal("MyModEntry"..line):Show();
+        lineplusoffset = line + FauxScrollFrame_GetOffset(MAGUIScrollBar);
+        if lineplusoffset <= 50 and MAGUIData[lineplusoffset] ~= nil then
+            getglobal("MAGUIEntry"..line):SetText(MAGUIData[lineplusoffset]);
+            getglobal("MAGUIEntry"..line):Show();
         else
-            getglobal("MyModEntry"..line):Hide();
+            getglobal("MAGUIEntry"..line):Hide();
         end
     end
 end
@@ -297,15 +312,15 @@ function MA_GetGreetingString()
 end
 
 function MA_GetMyHighestCompletedString()
-    return "|cff965573" .. L["Mythic Audit: "] .. "|r" .. L["Highest Mythic+ Dungeon Completed This Week: "] .. MAPlayerDB[gPlayerName].HIGHEST;
+    return "|cff965573" .. L["Mythic Audit: "] .. "|r" .. L["Highest Mythic+ Dungeon Completed This Week: "] .. _MAudit_PlayerDatabase_[gPlayerName].HIGHEST;
 end
 
 function MA_GetNewHighestCompletedString()
-    return "|cff965573" .. L["Mythic Audit: "] .. "|r" .. L["Congratulations! New Highest Weekly Mythic+: "] .. MAPlayerDB[gPlayerName].HIGHEST;
+    return "|cff965573" .. L["Mythic Audit: "] .. "|r" .. L["Congratulations! New Highest Weekly Mythic+: "] .. _MAudit_PlayerDatabase_[gPlayerName].HIGHEST;
 end
 
 function MA_GetResettingDatabaseString()
-    return "|cff965573" .. L["Mythic Audit: "] .. "|r" .. L["Weekly Server Reset - Resetting MADatabase..."];
+    return "|cff965573" .. L["Mythic Audit: "] .. "|r" .. L["Weekly Server Reset - Resetting MADatabase. Please reload your UI (/console reloadui)."];
 end
 
 function MA_GetAddonMessagePrefixString()
@@ -323,11 +338,12 @@ end
 SLASH_MYTHICAUDIT1 = "/maudit";
 SlashCmdList["MYTHICAUDIT"] = function(msg)
     if msg and msg == 'reset' then
-        MADB.resetTime = 0;
+        _MAudit_Database_.resetTime = 0;
         MA_WeeklyReset();
-        C_ChallengeMode.RequestMapInfo();
+        ReloadUI();
+        --C_ChallengeMode.RequestMapInfo();
     else
-        MyMod_OnShow();
-        -- MA_DumpDatabase();
+        MAGUI_OnShow();
+        --MA_DumpDatabase();
     end
 end

@@ -2,14 +2,14 @@
                    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
                    xsi:schemaLocation="http://www.blizzard.com/wow/ui/ 
                    ..\..\FrameXML\UI.xsd">
-  <Button name = "MyModEntryTemplate" virtual="true">
+  <Button name = "MAGUIEntryTemplate" virtual="true">
     <Size>
       <AbsDimension x="150" y="16" />
     </Size>
     <NormalFont style="GameFontHighlightLeft"/>
   </Button>
 
-  <Frame name="MyMod" parent="UIParent" enableMouse="true" movable="true">
+  <Frame name="MAGUI" parent="UIParent" enableMouse="true" movable="true">
     <Size>
       <AbsDimension x="196" y="154"/>
     </Size>
@@ -18,7 +18,7 @@
     </Anchors>
     <Scripts>
       <OnLoad>
-        MyMod_OnLoad()
+        MAGUI_OnLoad()
       </OnLoad>
     </Scripts>
     <Backdrop bgFile="Interface\DialogFrame\UI-DialogBox-Background" edgeFile="Interface\Tooltips\UI-Tooltip-Border" tile="true">
@@ -35,12 +35,12 @@
     <Frames>
       <Button name="$parent_Close" parentKey="close" inherits="UIPanelCloseButton">
          <Anchors>
-           <Anchor point="TOPLEFT" relativePoint="TOPLEFT" relativeTo="MyMod">
+           <Anchor point="TOPLEFT" relativePoint="TOPLEFT" relativeTo="MAGUI">
              <Offset x="-25" y="20"/>
            </Anchor>
          </Anchors>
        </Button>
-      <ScrollFrame name="MyModScrollBar" inherits="FauxScrollFrameTemplate">
+      <ScrollFrame name="MAGUIScrollBar" inherits="FauxScrollFrameTemplate">
         <Anchors>
           <Anchor point="TOPLEFT">
             <Offset>
@@ -55,59 +55,58 @@
         </Anchors>
         <Scripts>
           <OnVerticalScroll>
-            FauxScrollFrame_OnVerticalScroll(self, offset, 16, MyModScrollBar_Update);
+            FauxScrollFrame_OnVerticalScroll(self, offset, 16, MAGUIScrollBar_Update);
           </OnVerticalScroll>
           <OnShow>
-            MyModScrollBar_Update()
+            MAGUIScrollBar_Update()
           </OnShow>
         </Scripts>
       </ScrollFrame>
 
-      <Button name="MyModEntry1" inherits="MyModEntryTemplate">
+      <Button name="MAGUIEntry1" inherits="MAGUIEntryTemplate">
         <Anchors>
-          <Anchor point="TOPLEFT" relativeTo="MyModScrollBar" relativePoint="TOPLEFT">
+          <Anchor point="TOPLEFT" relativeTo="MAGUIScrollBar" relativePoint="TOPLEFT">
             <Offset>
               <AbsDimension x="8" y="0"/>
             </Offset>
            </Anchor>
         </Anchors>
       </Button>
-      <Button name="MyModEntry2" inherits="MyModEntryTemplate">
+      <Button name="MAGUIEntry2" inherits="MAGUIEntryTemplate">
         <Anchors>
-          <Anchor point="TOPLEFT" relativeTo="MyModEntry1" relativePoint="BOTTOMLEFT"/>
+          <Anchor point="TOPLEFT" relativeTo="MAGUIEntry1" relativePoint="BOTTOMLEFT"/>
         </Anchors>
       </Button>
-      <Button name="MyModEntry3" inherits="MyModEntryTemplate">
+      <Button name="MAGUIEntry3" inherits="MAGUIEntryTemplate">
         <Anchors>
-          <Anchor point="TOPLEFT" relativeTo="MyModEntry2" relativePoint="BOTTOMLEFT"/>
+          <Anchor point="TOPLEFT" relativeTo="MAGUIEntry2" relativePoint="BOTTOMLEFT"/>
         </Anchors>
       </Button>
-      <Button name="MyModEntry4" inherits="MyModEntryTemplate">
+      <Button name="MAGUIEntry4" inherits="MAGUIEntryTemplate">
         <Anchors>
-          <Anchor point="TOPLEFT" relativeTo="MyModEntry3" relativePoint="BOTTOMLEFT"/>
+          <Anchor point="TOPLEFT" relativeTo="MAGUIEntry3" relativePoint="BOTTOMLEFT"/>
         </Anchors>
       </Button>
-      <Button name="MyModEntry5" inherits="MyModEntryTemplate">
+      <Button name="MAGUIEntry5" inherits="MAGUIEntryTemplate">
         <Anchors>
-          <Anchor point="TOPLEFT" relativeTo="MyModEntry4" relativePoint="BOTTOMLEFT"/>
+          <Anchor point="TOPLEFT" relativeTo="MAGUIEntry4" relativePoint="BOTTOMLEFT"/>
         </Anchors>
       </Button>
-      <Button name="MyModEntry6" inherits="MyModEntryTemplate">
+      <Button name="MAGUIEntry6" inherits="MAGUIEntryTemplate">
         <Anchors>
-          <Anchor point="TOPLEFT" relativeTo="MyModEntry4" relativePoint="BOTTOMLEFT"/>
+          <Anchor point="TOPLEFT" relativeTo="MAGUIEntry5" relativePoint="BOTTOMLEFT"/>
         </Anchors>
       </Button>
-      <Button name="MyModEntry7" inherits="MyModEntryTemplate">
+      <Button name="MAGUIEntry7" inherits="MAGUIEntryTemplate">
         <Anchors>
-          <Anchor point="TOPLEFT" relativeTo="MyModEntry4" relativePoint="BOTTOMLEFT"/>
+          <Anchor point="TOPLEFT" relativeTo="MAGUIEntry6" relativePoint="BOTTOMLEFT"/>
         </Anchors>
       </Button>
-      <Button name="MyModEntry8" inherits="MyModEntryTemplate">
+      <Button name="MAGUIEntry8" inherits="MAGUIEntryTemplate">
         <Anchors>
-          <Anchor point="TOPLEFT" relativeTo="MyModEntry4" relativePoint="BOTTOMLEFT"/>
+          <Anchor point="TOPLEFT" relativeTo="MAGUIEntry7" relativePoint="BOTTOMLEFT"/>
         </Anchors>
       </Button>
-
     </Frames>
   </Frame>
 </Ui>

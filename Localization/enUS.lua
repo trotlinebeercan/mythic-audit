@@ -6,4 +6,4 @@ L[" Loaded - v"]    = true;
 
 L["Highest Mythic+ Dungeon Completed This Week: "] = true;
 L["Congratulations! New Highest Weekly Mythic+: "] = true;
-L["Weekly Server Reset - Resetting MADatabase..."] = true;
+L["Weekly Server Reset - Resetting MADatabase. Please reload your UI (/console reloadui)."] = true;
