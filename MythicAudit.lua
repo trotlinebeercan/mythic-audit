@@ -11,7 +11,7 @@ local L = LibStub("AceLocale-3.0"):GetLocale("MythicAudit");
 -- Globals, constants, statics, enums, etc.
 -------------------------------------------------------------------------------
 
-local gVersion       = "1.0.1.1";
+local gVersion       = "1.0.2";
 local gPlayerName    = UnitName("player");
 local _,gPlayerClass = UnitClass("player");
 local gWeekInSeconds = 604800;
