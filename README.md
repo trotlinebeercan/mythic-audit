@@ -1,2 +1,6 @@
 # mythic-audit
-Warcraft Add-on: Highest Completed Mythic+ Manager for Guilds
+## Highest Completed Mythic+ Manager for Guilds
+
+[GitHub](https://github.com/trotlinebeercan/mythic-audit)
+
+[Curse](https://mods.curse.com/addons/wow/265051-mythic-audit)
