@@ -103,7 +103,7 @@ function addon:CHAT_MSG_ADDON(prefix, message, channel, sender)
             else
                 -- otherwise, store this users info in our local database
                 local _, _, _, time = MA_DeconstructFullKeyMessageString(message);
-                if time ~= nil and time > _MAudit_Database_.resetTime - gWeekInSeconds then
+                if time ~= nil and tonumber(time) > _MAudit_Database_.resetTime - gWeekInSeconds then
                     MA_WriteToDatabase(message);
                 end
             end
